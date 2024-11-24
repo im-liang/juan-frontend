@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import './UserSettings.css';
 
 const UserSettings = () => {
   const [leetcodeUsername, setLeetcodeUsername] = useState("");
   const [shareSubmissions, setShareSubmissions] = useState(false);
   const [loading, setLoading] = useState(false); // To manage loading state
   const [error, setError] = useState(""); // To manage error messages
+
+  const navigate = useNavigate(); // React Router's hook for navigation
 
   const fetchUserSettings = async () => {
     try {
@@ -22,8 +25,8 @@ const UserSettings = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setLeetcodeUsername(data.leetcode_username || "");
-        setShareSubmissions(data.share_submissions || false);
+        setLeetcodeUsername(data.user.leetcode_username || "");
+        setShareSubmissions(data.user.share_submission || false);
       } else {
         console.error("Failed to fetch user settings.");
       }
@@ -49,7 +52,7 @@ const UserSettings = () => {
         },
         body: JSON.stringify({
           leetcode_username: leetcodeUsername,
-          share_submissions: shareSubmissions,
+          share_submission: shareSubmissions,
         }),
       });
 
@@ -73,36 +76,49 @@ const UserSettings = () => {
   }, []);
 
   return (
-    <div>
-      <h1>User Settings</h1>
+    <div class="setting-container">
+      <div class="button-container">
+        <button onClick={() => navigate("/")}>
+          Homepage
+        </button>
+      </div>
+      <h1 class="title">User Settings</h1>
 
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <label>
-        LeetCode Username:
-        <input
-          type="text"
-          value={leetcodeUsername}
-          onChange={(e) => setLeetcodeUsername(e.target.value)}
-          placeholder="Enter your LeetCode username"
-        />
-      </label>
+<div class="leetcode-form">
+  <input type="text"
+      value={leetcodeUsername}
+      onChange={(e) => setLeetcodeUsername(e.target.value)}
+   />
+  <label for="text" class="leetcode-label-name">
+    <span class="leetcode-content-name">
+      Leetcode Username
+    </span>
+  </label>
+</div>
       <br />
-      <label>
-        Share Submissions:
+      <label class="submission-checkbox">
         <input
           type="checkbox"
           checked={shareSubmissions}
           onChange={(e) => setShareSubmissions(e.target.checked)}
         />
+        <div>
+          <svg class="submission-check" viewBox="-2 -2 35 35" aria-hidden="true">
+            <title>checkmark-circle</title>
+            <polyline points="7.57 15.87 12.62 21.07 23.43 9.93" />
+          </svg>
+        </div>
+        <div>Share Submissions</div>
       </label>
       <br />
-      <button onClick={handleSave} disabled={loading}>
-        Save
-      </button>
-      <button onClick={() => navigate("/")} style={{ marginLeft: "10px" }}>
-        Back to Homepage
+      <button class="save-button" onClick={handleSave} disabled={loading}>
+        <span class="save-button_lg">
+          <span class="save-button_sl"></span>
+          <span class="save-button_text">save</span>
+        </span>
       </button>
     </div>
   );

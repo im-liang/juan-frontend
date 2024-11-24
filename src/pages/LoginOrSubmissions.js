@@ -1,9 +1,12 @@
 /* global google */
 import React, { useEffect, useState, useCallback } from "react";
+import './LoginOrSubmissions.css'
 
 const LoginOrSubmissions = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(false); // To manage loading state
+  const [error, setError] = useState(""); // For error handling
 
   const handleGoogleResponse = useCallback(async (response) => {
     try {
@@ -29,6 +32,8 @@ const LoginOrSubmissions = () => {
   }, []);
 
   const fetchSubmissions = async (token) => {
+    setLoading(true);
+    setError(""); // Reset error state
     try {
       const response = await fetch(process.env.REACT_APP_API_GET_SUBMISSION, {
         method: "GET",
@@ -40,20 +45,24 @@ const LoginOrSubmissions = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setSubmissions(data.shared_submissions);
-      } else if(response.status === 404) {
+        setSubmissions(data || []);
+      } else if (response.status === 404) {
         setSubmissions([]);
       } else {
-        console.error("Failed to fetch submissions.");
+        setError("Failed to fetch submissions.");
       }
     } catch (error) {
+      setError("Error fetching submissions.");
       console.error("Error fetching submissions:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     setIsLoggedIn(false);
+    setSubmissions([]);
   };
 
   const initializeGoogleSignIn = (handleGoogleResponse) => {
@@ -77,28 +86,53 @@ const LoginOrSubmissions = () => {
 
     if (!token) {
       initializeGoogleSignIn(handleGoogleResponse);
+    } else {
+      fetchSubmissions(token); // Fetch submissions when already logged in
     }
   }, [handleGoogleResponse]);
 
   return (
     <div>
       {!isLoggedIn ? (
-        <div>
+        <div class="google-sigin-container">
           <h1>Login with Google</h1>
           <div id="signInDiv"></div>
         </div>
       ) : (
         <div>
-          <h1>Submissions</h1>
-          <ul>
+          <div class="button-container">
+            <button onClick={() => (window.location.href = "/settings")}>
+              Settings
+            </button>
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+          <h1 class="title">Submissions</h1>
+
+          {loading && <p>Loading your submissions...</p>}
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          {submissions.length === 0 ? (
+            <p>No submissions found for today.</p>
+          ) : (
+        <div class="submission-table-container">
+          <table class="submission-table">
+            <thead>
+              <tr>
+                <th>LeetCode Username</th>
+                <th>Title</th>
+              </tr>
+            </thead>
+            <tbody>
             {submissions.map((submission, index) => (
-              <li key={index}>{submission.title}</li>
+              <tr key={index}>
+                <td>{submission.leetcode_username}</td>
+                <td>{submission.today_submissions}</td>
+              </tr>
             ))}
-          </ul>
-          <button onClick={() => (window.location.href = "/settings")}>
-            Go to Settings
-          </button>
-          <button onClick={handleLogout}>Logout</button>
+            </tbody>
+          </table>
+        </div>
+      )}
         </div>
       )}
     </div>

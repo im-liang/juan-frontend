@@ -1,0 +1,125 @@
+.google-sigin-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 20px;
+  margin-top: 10px;
+}
+
+.button-container button {
+  margin-left: 10px;
+}
+
+.button-container button {
+  width: 130px;
+  height: 40px;
+  padding: 10px 25px;
+  border: 2px solid #000;
+  font-family: 'Lato', sans-serif;
+  font-weight: 500;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+}
+
+.button-container button {
+  position: relative;
+  color: #000;
+  z-index: 2;
+  line-height: 40px;
+  padding: 0;
+}
+.button-container button:hover{
+  border: none;
+}
+.button-container button:before,
+.button-container button:after {
+  position: absolute;
+  content: "";
+  width: 0%;
+  height: 0%;
+  border: 2px solid;
+  z-index: -1;
+  transition: all 0.3s ease;
+}
+.button-container button:before {
+  top: 0;
+   left: 0;
+   border-bottom-color: transparent;
+   border-right-color: transparent;
+   border-top-color: #000;
+   border-left-color: #000;
+}
+.button-container button:after{
+   bottom: 0;
+   right: 0;
+   border-top-color: transparent;
+   border-left-color: transparent;
+   border-bottom-color: #000;
+   border-right-color: #000;
+}
+.button-container button:hover:before,
+.button-container button:hover:after {
+  border-color: #000;
+  height: 100%;
+  width: 100%;
+}
+
+
+/* title */
+.title {
+    text-align: center;
+    margin: 0 auto;
+}
+
+
+/* table */
+.submission-table-container {
+    margin: 20px;
+}
+
+.submission-table {
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: normal;
+    border: none;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    white-space: nowrap;
+    background-color: white;
+}
+
+.submission-table td, .submission-table th {
+    text-align: center;
+    padding: 8px;
+}
+
+.submission-table td {
+    border-right: 1px solid #f8f8f8;
+    font-size: 12px;
+}
+
+.submission-table thead th {
+    color: #ffffff;
+    background: #4FC3A1;
+}
+
+
+.submission-table thead th:nth-child(odd) {
+    color: #ffffff;
+    background: #324960;
+}
+
+.submission-table tr:nth-child(even) {
+    background: #F8F8F8;
+}
