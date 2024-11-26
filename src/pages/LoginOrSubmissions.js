@@ -67,6 +67,8 @@ const LoginOrSubmissions = () => {
 
     setIsLoggedIn(false);
     setSubmissions([]);
+
+    window.location.href = "/";
   };
 
   const initializeGoogleSignIn = (handleGoogleResponse) => {
