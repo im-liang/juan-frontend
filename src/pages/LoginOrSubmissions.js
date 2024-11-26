@@ -60,9 +60,15 @@ const LoginOrSubmissions = () => {
   };
 
   const handleLogout = () => {
+    google.accounts.id.disableAutoSelect();
+
+    localStorage.removeItem("google_user");
     localStorage.removeItem("access_token");
+
     setIsLoggedIn(false);
     setSubmissions([]);
+
+    window.location.href = "/";
   };
 
   const initializeGoogleSignIn = (handleGoogleResponse) => {
@@ -96,7 +102,7 @@ const LoginOrSubmissions = () => {
       {!isLoggedIn ? (
         <div class="google-sigin-container">
           <h1>Login with Google</h1>
-          <div id="signInDiv"></div>
+          <div class="g-signin2" data-onsuccess="onSignIn" id="signInDiv"></div>
         </div>
       ) : (
         <div>
