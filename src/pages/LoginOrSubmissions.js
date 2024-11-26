@@ -67,8 +67,6 @@ const LoginOrSubmissions = () => {
 
     setIsLoggedIn(false);
     setSubmissions([]);
-
-    window.location.href = "/";
   };
 
   const initializeGoogleSignIn = (handleGoogleResponse) => {
@@ -100,19 +98,19 @@ const LoginOrSubmissions = () => {
   return (
     <div>
       {!isLoggedIn ? (
-        <div class="google-sigin-container">
+        <div className="google-sigin-container">
           <h1>Login with Google</h1>
-          <div class="g-signin2" data-onsuccess="onSignIn" id="signInDiv"></div>
+          <div className="g-signin2" data-onsuccess="onSignIn" id="signInDiv"></div>
         </div>
       ) : (
         <div>
-          <div class="button-container">
+          <div className="button-container">
             <button onClick={() => (window.location.href = "/settings")}>
               Settings
             </button>
             <button onClick={handleLogout}>Logout</button>
           </div>
-          <h1 class="title">Submissions</h1>
+          <h1 className="title">Submissions</h1>
 
           {loading && <p>Loading your submissions...</p>}
           {error && <p style={{ color: "red" }}>{error}</p>}
@@ -120,8 +118,8 @@ const LoginOrSubmissions = () => {
           {submissions.length === 0 ? (
             <p>No submissions found for today.</p>
           ) : (
-        <div class="submission-table-container">
-          <table class="submission-table">
+        <div className="submission-table-container">
+          <table className="submission-table">
             <thead>
               <tr>
                 <th>LeetCode Username</th>

@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
 import LoginOrSubmissions from "./pages/LoginOrSubmissions";
 import UserSettings from "./pages/UserSettings";
 
