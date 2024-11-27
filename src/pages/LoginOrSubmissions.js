@@ -6,9 +6,11 @@ const LoginOrSubmissions = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(false); // To manage loading state
+  const [signingIn, setSigningIn] = useState(false);
   const [error, setError] = useState(""); // For error handling
 
   const handleGoogleResponse = useCallback(async (response) => {
+    setSigningIn(true);
     try {
       const res = await fetch(process.env.REACT_APP_API_GOOGLE_CALLBACK, {
         method: "POST",
@@ -28,6 +30,8 @@ const LoginOrSubmissions = () => {
       }
     } catch (error) {
       console.error("Error during Google authentication:", error);
+    } finally {
+      setSigningIn(false);
     }
   }, []);
 
@@ -45,15 +49,21 @@ const LoginOrSubmissions = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setSubmissions(data || []);
+        const updatedSubmissions = data.map((submission) => ({
+          ...submission,
+          today_submissions: submission.today_submissions || [],  // Default to empty array
+        }));
+        setSubmissions(updatedSubmissions || []);
       } else if (response.status === 404) {
         setSubmissions([]);
       } else {
         setError("Failed to fetch submissions.");
+        setSubmissions([]);
       }
     } catch (error) {
       setError("Error fetching submissions.");
       console.error("Error fetching submissions:", error);
+      setSubmissions([]);
     } finally {
       setLoading(false);
     }
@@ -102,7 +112,11 @@ const LoginOrSubmissions = () => {
       {!isLoggedIn ? (
         <div className="google-sigin-container">
           <h1>Login with Google</h1>
-          <div className="g-signin2" data-onsuccess="onSignIn" id="signInDiv"></div>
+          {signingIn ? (
+            <p>Signing in...</p>
+          ) : (
+            <div className="g-signin2" data-onsuccess="onSignIn" id="signInDiv"></div>
+          )}
         </div>
       ) : (
         <div>
@@ -126,13 +140,15 @@ const LoginOrSubmissions = () => {
               <tr>
                 <th>LeetCode Username</th>
                 <th>Title</th>
+                <th>Solved Count</th>
               </tr>
             </thead>
             <tbody>
             {submissions.map((submission, index) => (
               <tr key={index}>
                 <td>{submission.leetcode_username}</td>
-                <td>{submission.today_submissions}</td>
+                <td>{submission.today_submissions.length > 0 ? submission.today_submissions.join(", ") : "None"}</td>
+                <td>{submission.today_submissions ? submission.today_submissions.length : 0}</td>
               </tr>
             ))}
             </tbody>
